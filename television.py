@@ -345,8 +345,8 @@ def create_command_line_parser():
         ~$ %prog \\
             -D  | --debug \\
             -S  | --silence \\
-            -c  | --config-file /etc/conf/kte.conf.json \\
-            -l  | --log-file /etc/log/kte.log \\
+            -c  | --config-file /etc/conf/tv.conf.json \\
+            -l  | --log-file /etc/log/tv.log \\
             -a  | --action scroll-msg \\
             -t  | --bot-token xXx \\
             -i  | --chat-id xXx \\
@@ -355,8 +355,8 @@ def create_command_line_parser():
     [ EXAMPLE ]: Open interactive promp for issuing single messages -
 
         ~$ %prog \\
-            -c  | --config-file /etc/conf/kte.conf.json \\
-            -l  | --log-file /etc/log/kte.log \\
+            -c  | --config-file /etc/conf/tv.conf.json \\
+            -l  | --log-file /etc/log/tv.log \\
             -a  | --action scroll-msg \\
             -t  | --bot-token xXx \\
             -i  | --chat-id xXx \\
@@ -365,8 +365,8 @@ def create_command_line_parser():
     [ EXAMPLE ]: Dump contents of file in chat room  -
 
         ~$ %prog \\
-            -c  | --config-file /etc/conf/kte.conf.json \\
-            -l  | --log-file /etc/log/kte.log \\
+            -c  | --config-file /etc/conf/tv.conf.json \\
+            -l  | --log-file /etc/log/tv.log \\
             -a  | --action scroll-file \\
             -t  | --bot-token xXx \\
             -i  | --chat-id xXx \\
@@ -375,8 +375,8 @@ def create_command_line_parser():
     [ EXAMPLE ]: Monitor file and issue messages with all new file lines -
 
         ~$ %prog \\
-            -c  | --config-file /etc/conf/kte.conf.json \\
-            -l  | --log-file /etc/log/kte.log \\
+            -c  | --config-file /etc/conf/tv.conf.json \\
+            -l  | --log-file /etc/log/tv.log \\
             -a  | --action scroll-file \\
             -t  | --bot-token xXx \\
             -i  | --chat-id xXx \\
@@ -387,8 +387,8 @@ def create_command_line_parser():
                  /commands to run functions from src/backpack/tv_bot_ctrls.py -
 
         ~$ %prog \\
-            -c  | --config-file /etc/conf/kte.conf.json \\
-            -l  | --log-file /etc/log/kte.log \\
+            -c  | --config-file /etc/conf/tv.conf.json \\
+            -l  | --log-file /etc/log/tv.log \\
             -a  | --action bot-ctrl \\
             -t  | --bot-token xXx'''
     parser = optparse.OptionParser(help_msg)
