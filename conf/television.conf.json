@@ -5,7 +5,6 @@
     "TV_VERSION_NO":                 "1.0",
     "_comment_with_actions":         "scroll-msg, scroll-file, bot-ctrl",
     "TV_DEFAULT": {
-         "project-path":             "/home/smx093pk01/Projects/TeleVision",
          "log-file":                 "log/television.log",
          "conf-file":                "conf/television.conf.json",
          "input-file":               "dta/television.in",
