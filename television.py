@@ -8,11 +8,14 @@ import os
 import logging
 import optparse
 import time
+import json
 import pysnooper
 
 from src.backpack.bp_log import log_init
 from src.backpack.bp_shell import shell_cmd
-from src.backpack.bp_general import stdout_msg, clear_screen, pretty_dict_print, write2file, read_file
+from src.backpack.bp_general import (
+    stdout_msg, clear_screen, pretty_dict_print, write2file, read_file
+)
 from src.backpack.bp_filters import filter_directory_from_path
 from src.backpack.bp_checkers import check_file_exists
 from src.backpack.bp_fetchers import fetch_timestamp
@@ -25,6 +28,7 @@ TV_DEFAULT = {
     'conf-file': 'conf/television.conf.json',
     'log-file': 'log/television.log',
     'input-file': 'dta/television.in',      # For outgoing messages
+    'out-file': 'dta/television.out',       # For incomming messages
     'log-format': '[ %(asctime)s ] %(name)s [ %(levelname)s ] %(thread)s - %(filename)s - %(lineno)d: %(funcName)s - %(message)s',
     'timestamp-format': '%d/%m/%Y-%H:%M:%S',
     'target-url': 'https://api.telegram.org',
@@ -141,31 +145,29 @@ def load_config_json():
     global TV_VERSION
     global TV_VERSION_NO
     log.debug('')
-    conf_file_path = TV_DEFAULT['conf-dir'] + '/' + TV_DEFAULT['conf-file']
-    if not os.path.isfile(conf_file_path):
+    if not os.path.isfile(TV_DEFAULT['conf-file']):
         stdout_msg(
-            'File not found! ({})'.format(conf_file_path),
+            'File not found! ({})'.format(TV_DEFAULT['conf-file']),
             nok=True, silence=TV_DEFAULT['silence']
         )
         return False
-    with open(conf_file_path, 'r', encoding='utf-8', errors='ignore') as conf_file:
-        try:
-            with open(conf_file_path) as fl:
-                content = json.load(fl)
-            TV_DEFAULT.update(content['TV_DEFAULT'])
-            TV_SCRIPT_NAME = content['TV_SCRIPT_NAME']
-            TV_SCRIPT_DESCRIPTION = content['TV_SCRIPT_DESCRIPTION']
-            TV_VERSION = content['TV_VERSION']
-            TV_VERSION_NO = content['TV_VERSION_NO']
-        except Exception as e:
-            log.error(e)
-            stdout_msg(
-                'Could not load config file! ({})'.format(conf_file_path),
-                nok=True, silence=TV_DEFAULT['silence']
-            )
-            return False
+    try:
+        with open(TV_DEFAULT['conf-file'], 'r', encoding='utf-8', errors='ignore') as fl:
+            content = json.load(fl)
+        TV_DEFAULT.update(content['TV_DEFAULT'])
+        TV_SCRIPT_NAME = content['TV_SCRIPT_NAME']
+        TV_SCRIPT_DESCRIPTION = content['TV_SCRIPT_DESCRIPTION']
+        TV_VERSION = content['TV_VERSION']
+        TV_VERSION_NO = content['TV_VERSION_NO']
+    except Exception as e:
+        log.error(e)
+        stdout_msg(
+            'Could not load config file! ({})'.format(TV_DEFAULT['conf-file']),
+            nok=True, silence=TV_DEFAULT['silence']
+        )
+        return False
     stdout_msg(
-        'Settings loaded from config file! ({})'.format(conf_file_path),
+        'Settings loaded from config file! ({})'.format(TV_DEFAULT['conf-file']),
         ok=True, silence=TV_DEFAULT['silence']
     )
     return True
@@ -206,9 +208,13 @@ def action_scroll_msg(*args, **kwargs):
             )
     return 0
 
+#@pysnooper.snoop()
 def action_scroll_file(*args, **kwargs):
     log.debug('')
-    return action_scroll(*TV_DEFAULT['input-file'].split(','), **kwargs)
+    log.debug('Action *args, **kwargs - {}, {}'.format(args, kwargs))
+    in_files = kwargs.get('input-file', TV_DEFAULT['input-file']).split(',')
+    log.debug('Input files: {}'. format(in_files))
+    return action_scroll(*in_files, **kwargs)
 
 #@pysnooper.snoop()
 def action_scroll(*args, **kwargs):
@@ -275,6 +281,7 @@ def action_bot_ctrl(*args, **kwargs):
 
 # HANDLERS
 
+#@pysnooper.snoop()
 def handle_actions(*args, **kwargs):
     log.debug('')
     failure_count = 0
@@ -433,7 +440,7 @@ def process_chat_id_argument(parser, options):
 def process_input_file_argument(parser, options):
     global TV_DEFAULT
     log.debug('')
-    file_path = options.config_file_path
+    file_path = options.input_file_path
     if file_path == None:
         log.warning(
             'No input file provided. Defaulting to ({}).'\
@@ -654,6 +661,7 @@ def parse_command_line_arguments():
 
 # INIT
 
+#@pysnooper.snoop()
 def init_television(**kwargs):
     log.debug('')
     display_header()
